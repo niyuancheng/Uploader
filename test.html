@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./dist/uploader.umd.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <input type="file" name="" id="file" multiple>
+
+    <script defer>
+
+        window.onload = function() {
+            let uploader = new Uploader({
+                chunkApi:"http://localhost/test",
+                fileApi:"http://localhost/test",
+                target: "#file",
+                ifSendByChunk: false,
+                chunkSize:1024,
+                autoUpload:true
+            })
+
+            // uploader.addEventListener("fileSuccess",(file)=>{
+            //     console.log("所有文件发送成功");
+            // })
+
+            // uploader.addEventListener("fileProgress",(file,size)=>{
+            //     console.log(size)
+            // })
+
+            uploader.addEventListener("chunkSuccess",(file,chunk,id,data)=>{
+                console.log("success",file,chunk,id,data);
+                uploader.cancelUploadFile(file);
+            })
+
+            uploader.addEventListener("chunkAbort",(chunk,id,data) => {
+                console.log("abort",chunk,id,data);
+            })
+
+        }
+    </script>
+</body>
+</html>
