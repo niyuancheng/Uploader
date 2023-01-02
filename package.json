@@ -1,12 +1,11 @@
 {
-  "name": "uploader",
-  "version": "1.0.0",
+  "name": "niuploader",
+  "version": "1.0.1",
   "description": "This is TS Library for the uploading of large file",
-  "main": "index.js",
   "scripts": {
     "build": "rollup -cw"
   },
-  "author": "",
+  "author": "NovaNi",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.20.7",
@@ -21,5 +20,12 @@
   },
   "dependencies": {
     "rollup-plugin-dts": "^4.1.0"
-  }
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "main":"./dist/uploader.cjs.js",
+  "browser":"./dist/uploader.umd.js",
+  "module": "./dist/uploader.es.js"
 }
