@@ -1,6 +1,6 @@
 {
   "name": "niuploader",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "This is TS Library for the uploading of large file",
   "scripts": {
     "build": "rollup -cw"
@@ -27,5 +27,6 @@
   },
   "main":"./dist/uploader.cjs.js",
   "browser":"./dist/uploader.umd.js",
-  "module": "./dist/uploader.es.js"
+  "module": "./dist/uploader.es.js",
+  "types": "./dist/index.d.ts"
 }
