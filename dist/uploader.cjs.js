@@ -206,8 +206,7 @@ class Uploader extends CustomEvent {
             chunkSize: 1024 * 1024 * 0.1,
             autoUpload: true,
             chunkApi: "",
-            fileApi: "",
-            target: "",
+            fileApi: ""
         };
         this.fileMap = new Map();
         //覆写父类的dispatchEvent方法

@@ -15,8 +15,7 @@ class Uploader extends CustomEvent {
     chunkSize: 1024 * 1024 * 0.1,
     autoUpload: true,
     chunkApi:"",
-    fileApi:"",
-    target:"",
+    fileApi:""
   };
   private fileInputElement: HTMLInputElement | undefined;
   private fileMap: Map<File, FileUtils> = new Map<File, FileUtils>();
