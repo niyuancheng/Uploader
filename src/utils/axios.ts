@@ -11,7 +11,6 @@ import { ChunkItem } from "../type/ChunkItem";
 import { FileItem } from "../type/FileItem";
 
 class Axios {
-  loadedSizeArray: number[] = [];
   _events: EventObject;
   constructor() {
     this._events = {};
