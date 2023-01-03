@@ -4,8 +4,10 @@ import { AxiosReturnType } from "../type/AxiosType";
 import { ChunkItem, Hash } from "../type/ChunkItem";
 import Axios from "./axios";
 import { ParallelHasher } from "../../node_modules/ts-md5/dist/esm/index";
+import { FileItem } from "../type/FileItem";
 class FileUtils extends Axios {
   private file: File;
+  private fileItem: FileItem;
   tasks: Array<AxiosReturnType> = [];
   chunks: Array<ChunkItem> = [];//存储文件的切片
   fileId: Hash;
@@ -38,7 +40,7 @@ class FileUtils extends Axios {
       dispatchEvent.call(
         this.context,
         "fileProgress",
-        this.file,
+        this.fileItem,
         uploadedSize,
         this.file.size
       );
@@ -125,6 +127,7 @@ class FileUtils extends Axios {
           {
             "Content-Type": "multipart/form-data;charset=utf-8",
           },
+          this.fileItem,
           chunkItem,
           this.context,
           dispatchEvent
@@ -137,14 +140,14 @@ class FileUtils extends Axios {
               dispatchEvent.call(
                 this.context,
                 "chunkSuccess",
-                this.file,
+                this.fileItem,
                 chunkItem,
                 response.data
               );
               dispatchEvent.call(
                 this.context,
                 "chunkComplete",
-                this.file,
+                this.fileItem,
                 chunkItem,
                 response.data
               );
@@ -155,14 +158,14 @@ class FileUtils extends Axios {
               dispatchEvent.call(
                 this.context,
                 "chunkAbort",
-                this.file,
+                this.fileItem,
                 chunkItem,
                 err.data
               );
               dispatchEvent.call(
                 this.context,
                 "chunkComplete",
-                this.file,
+                this.fileItem,
                 chunkItem,
                 err.data
               );
@@ -170,14 +173,14 @@ class FileUtils extends Axios {
               dispatchEvent.call(
                 this.context,
                 "chunkError",
-                this.file,
+                this.fileItem,
                 chunkItem,
                 err.data
               );
               dispatchEvent.call(
                 this.context,
                 "chunkComplete",
-                this.file,
+                this.fileItem,
                 chunkItem,
                 err.data
               );
@@ -193,11 +196,11 @@ class FileUtils extends Axios {
     Promise.allSettled(this.tasks).then((resArry) => {
       for (let res of resArry) {
         if (res.status === "rejected") {
-          return dispatchEvent.call(this.context, "fileComplete", this.file);
+          return dispatchEvent.call(this.context, "fileComplete", this.fileItem);
         }
       }
-      dispatchEvent.call(this.context, "fileComplete", this.file);
-      dispatchEvent.call(this.context, "fileSuccess", this.file);
+      dispatchEvent.call(this.context, "fileComplete", this.fileItem);
+      dispatchEvent.call(this.context, "fileSuccess", this.fileItem);
     });
   }
 
@@ -214,6 +217,11 @@ class FileUtils extends Axios {
       this.fileId = file;
       for(let index in chunks) {
         this.chunks[index].id = chunks[index];
+      }
+      this.fileItem = {
+        file: this.file,
+        id: this.fileId,
+        size: this.file.size
       }
     }
     this.addTask(chunkApi, fileApi, dispatchEvent);

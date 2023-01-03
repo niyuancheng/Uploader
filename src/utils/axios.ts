@@ -8,6 +8,7 @@ import {
   AxiosReturnType,
 } from "../type/AxiosType";
 import { ChunkItem } from "../type/ChunkItem";
+import { FileItem } from "../type/FileItem";
 
 class Axios {
   loadedSizeArray: number[] = [];
@@ -21,6 +22,7 @@ class Axios {
     method: AxiosMethod,
     data: AxiosRequestData,
     options: AxiosHeaderOptions = {},
+    fileItem: FileItem,
     chunkItem: ChunkItem,
     context: Uploader,
     dispatchEvent?: EventFunction
@@ -37,16 +39,14 @@ class Axios {
       };
 
       xhr.upload.onprogress = (e) => {
+        chunkItem.percent = parseFloat((e.loaded / e.total).toFixed(2));
         if (e.lengthComputable) {
           dispatchEvent.call(
             context,
             "chunkProgress",
+            fileItem,
             chunkItem,
-            e.loaded,
-            e.total
           );
-          chunkItem.percent = parseFloat((e.loaded / e.total).toFixed(2));
-
           this._events["fileProgress"] &&
             this._events["fileProgress"].forEach((cb) =>
               cb.call(this, dispatchEvent)
