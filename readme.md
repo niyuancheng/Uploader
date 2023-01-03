@@ -1,6 +1,12 @@
 # NiUploader
 ## 简介
 这是一款由TS开发的适用于大文件上传的库，参考```simple-uploader.js```和自己的理解进行了重构，依赖HTML5相关API，对IE9以下浏览器不支持，请选择合适版本的浏览器进行使用，感谢配合。
+本库已实现
+1. 大文件分片上传
+2. 文件断点续传
+3. 上传进度详细展示
+4. 上传取消和暂停
+5. 暂停后可以继续上传文件剩下部分
 #### npm地址： www.npmjs.com/package/niuploader
 #### github源码: https://github.com/niyuancheng/Uploader
 

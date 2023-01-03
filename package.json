@@ -27,9 +27,9 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "main": "./dist/uploader.cjs.js",
-  "browser": "./dist/uploader.umd.js",
-  "module": "./dist/uploader.es.js",
+  "main": "./dist/uploader.min.cjs.js",
+  "browser": "./dist/uploader.min.umd.js",
+  "module": "./dist/uploader.min.es.js",
   "types": "./dist/index.d.ts",
   "keywords": [
     "typescript",
