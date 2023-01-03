@@ -9,6 +9,7 @@
 5. 暂停后可以继续上传文件剩下部分
 #### npm地址： www.npmjs.com/package/niuploader
 #### github源码: https://github.com/niyuancheng/Uploader
+### 我的个人github主页： https://github.com/niyuancheng
 
 ## 使用示例
 ``` js
