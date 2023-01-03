@@ -17,28 +17,22 @@
                 chunkApi:"http://localhost/test",
                 fileApi:"http://localhost/test",
                 target: "#file",
-                ifSendByChunk: false,
+                ifSendByChunk: true,
                 chunkSize:1024,
-                autoUpload:true
+                autoUpload: true
             })
 
             // uploader.addEventListener("fileSuccess",(file)=>{
             //     console.log("所有文件发送成功");
             // })
 
-            // uploader.addEventListener("fileProgress",(file,size)=>{
-            //     console.log(size)
+            // uploader.addEventListener("filePercent",(speed,percent,expect)=>{
+            //     console.log('-------------------------------');
+            //     console.log(`传输速度为: ${speed} B/s`);
+            //     console.log(`传输的比例为: ${percent}%`);
+            //     console.log(`预计还需${expect}s`);
+            //     console.log('-------------------------------');
             // })
-
-            uploader.addEventListener("chunkSuccess",(file,chunk,id,data)=>{
-                console.log("success",file,chunk,id,data);
-                uploader.cancelUploadFile(file);
-            })
-
-            uploader.addEventListener("chunkAbort",(chunk,id,data) => {
-                console.log("abort",chunk,id,data);
-            })
-
         }
     </script>
 </body>

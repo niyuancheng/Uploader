@@ -1,4 +1,4 @@
-export type FileEventTypes = "fileSend" | "fileProgress" | "fileAbort" | "fileError" | "fileSuccess" |"fileComplete";
+export type FileEventTypes = "fileSend" | "fileProgress" | "fileAbort" | "fileError" | "fileSuccess" |"fileComplete" | "filePercent";
 export type ChunkEventTypes = "chunkSend" | "chunkProgress" | "chunkAbort" | "chunkError" | "chunkSuccess" | "chunkComplete";
 export type EventTypes = FileEventTypes | ChunkEventTypes;
 

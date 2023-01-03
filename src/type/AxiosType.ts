@@ -1,3 +1,5 @@
+import { ChunkItem } from "./ChunkItem";
+
 export type AxiosMethod =
   | "post"
   | "get"
@@ -30,4 +32,5 @@ export type AxiosPromise = {
 export type AxiosReturnType = {
   xhr: XMLHttpRequest;
   p: Promise<AxiosPromise>;
+  chunkItem?: ChunkItem
 }

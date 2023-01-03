@@ -14,11 +14,14 @@ class Uploader extends CustomEvent {
     ifSendByChunk: true,
     chunkSize: 1024 * 1024 * 0.1,
     autoUpload: true,
+    workerPath:"../hash_worker.js",
     chunkApi:"",
     fileApi:""
   };
   private fileInputElement: HTMLInputElement | undefined;
   private fileMap: Map<File, FileUtils> = new Map<File, FileUtils>();
+  private lastUploadTime: number = 0;
+  
   constructor(configuration: UploaderOptions, options: BaseOptions = {}) {
     super(options);
     this.configuration = Object.assign(this.configuration,configuration);
@@ -31,6 +34,7 @@ class Uploader extends CustomEvent {
       this.assign(target);
     }
     this.clearChunkStorage();
+    this.showProgress();
   }
 
   clearChunkStorage(): void {
@@ -81,7 +85,7 @@ class Uploader extends CustomEvent {
     this.fileInputElement.addEventListener("change", (e: Event) => {
       [...(e.target as HTMLInputElement).files].forEach((file) => {
         console.log(file);
-        let fileUtils = new FileUtils(file, this, this.dispatchEvent);
+        let fileUtils = new FileUtils(file, this, this.dispatchEvent, this.configuration.workerPath);
         this.fileMap.set(file, fileUtils);
         if(this.configuration.autoUpload) {
           this.uploadFile(file,this.configuration.ifSendByChunk);
@@ -89,7 +93,6 @@ class Uploader extends CustomEvent {
       });
     });
   }
-
   uploadFile(file: File, ifSendByChunk: boolean = true): void | never {
     if (!this.fileMap.get(file)) {
       return $warn("你输入的文件不存在");
@@ -110,6 +113,34 @@ class Uploader extends CustomEvent {
       return $warn("你输入的文件不存在");
     }
     this.fileMap.get(file).cancelTask();
+  }
+
+  //格式化文件的具体大小，单位为B-字节
+  formatSize(size:number): string {
+    if(size < 1024) {
+      return `${size.toFixed(2)}B`;
+    } else if(size >= 1024 && size < 1024 * 1024) {
+      return `${(size/1024).toFixed(2)}KB`;
+    } else {
+      return `${(size/1024*1024).toFixed(2)}MB`;
+    }
+  }
+
+  showProgress() {
+    this.addEventListener("fileSend",(file, total) => {
+      this.lastUploadTime = + new Date();
+    })
+
+    this.addEventListener("fileProgress", (file, uploadedSize, totalSize)=>{
+        let now = +new Date();
+        let gap = now - this.lastUploadTime;
+        console.log(now, gap)
+        let uploadSpeed = uploadedSize / gap ;
+        let percent = (uploadedSize / totalSize * 100).toFixed(1);
+        let expectTime = (totalSize - uploadedSize) / uploadSpeed;
+        this.lastUploadTime = now;
+        this.dispatchEvent("filePercent", uploadSpeed, percent, expectTime);
+    })
   }
 
   //覆写父类的dispatchEvent方法

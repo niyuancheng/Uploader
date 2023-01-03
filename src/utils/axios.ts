@@ -7,10 +7,10 @@ import {
   AxiosPromise,
   AxiosReturnType,
 } from "../type/AxiosType";
+import { ChunkItem } from "../type/ChunkItem";
 
 class Axios {
   loadedSizeArray: number[] = [];
-  totalSize: number = 0;
   _events: EventObject;
   constructor() {
     this._events = {};
@@ -21,7 +21,7 @@ class Axios {
     method: AxiosMethod,
     data: AxiosRequestData,
     options: AxiosHeaderOptions = {},
-    index: number,
+    chunkItem: ChunkItem,
     context: Uploader,
     dispatchEvent?: EventFunction
   ): AxiosReturnType {
@@ -29,14 +29,24 @@ class Axios {
     let p = new Promise((res, rej) => {
       //刚发送http请求时触发loadstart事件
       xhr.upload.onloadstart = (e) => {
-        this.totalSize = e.total;
+        dispatchEvent.call(context, "chunkSend", chunkItem);
+        this._events["chunkSend"] &&
+          this._events["chunkSend"].forEach((cb) =>
+            cb.call(this, dispatchEvent)
+          );
       };
 
       xhr.upload.onprogress = (e) => {
         if (e.lengthComputable) {
-          dispatchEvent.call(context, "chunkProgress", e.total, e.loaded);
+          dispatchEvent.call(
+            context,
+            "chunkProgress",
+            chunkItem,
+            e.loaded,
+            e.total
+          );
+          chunkItem.percent = parseFloat((e.loaded / e.total).toFixed(2));
 
-          this.loadedSizeArray[index] = e.loaded;
           this._events["fileProgress"] &&
             this._events["fileProgress"].forEach((cb) =>
               cb.call(this, dispatchEvent)
@@ -69,8 +79,8 @@ class Axios {
 
     return {
       p: p as Promise<AxiosPromise>,
-      xhr: xhr
-    }
+      xhr: xhr,
+    };
   }
 }
 

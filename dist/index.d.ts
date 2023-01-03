@@ -7,12 +7,15 @@ declare class Uploader extends CustomEvent {
     private configuration;
     private fileInputElement;
     private fileMap;
+    private lastUploadTime;
     constructor(configuration: UploaderOptions, options?: BaseOptions);
     init(): void;
     clearChunkStorage(): void;
     assign(target: string | HTMLInputElement): void | never;
     uploadFile(file: File, ifSendByChunk?: boolean): void | never;
     cancelUploadFile(file: File): void | never;
+    formatSize(size: number): string;
+    showProgress(): void;
     dispatchEvent: EventFunction;
 }
 export default Uploader;

@@ -1,3 +1,4 @@
+import { ChunkItem } from "./ChunkItem";
 export declare type AxiosMethod = "post" | "get" | "patch" | "options" | "delete" | "put";
 export declare type AxiosRequestData = Document | XMLHttpRequestBodyInit;
 export declare type AxiosResponseData = string | number | boolean | {
@@ -21,4 +22,5 @@ export declare type AxiosPromise = {
 export declare type AxiosReturnType = {
     xhr: XMLHttpRequest;
     p: Promise<AxiosPromise>;
+    chunkItem?: ChunkItem;
 };
