@@ -45,9 +45,9 @@ uploader.addEventListener("filePercent",(speed,percent,expect)=>{
     - target：可选参数，传入target之后uploader会托管对应的DOM元素，__注意：target对应的托管元素必须为__```<input type="file" />```否则会报错，参数类型: string类型的id或者className，或者直接传入对应的DOM元素：HTMLInputElement。
 
     - workerPath: 可选参数，用于在工作者线程中加载指定的脚本来生成file和chunk的id,推荐使用本库自带的JS脚本hash_worker.js,可根据自己的情况修改路径，__但是一定要引入hash_worker.js，否则将无法正常生成ID!!!__
-
+    __建议：如果是在vue+webpack项目中使用可以将本库中的hash_worker.js放在public目录下，这样该文件就不会经过webpakc打包处理接着可以按如下的方式配置workerPath,经测试可完美正常使用__
     ```js
-    workerPath: "path/node_modules/niuploader/hash_worker.js"
+    workerPath: "/hash_worker.js"
     ```
     - ifSendByChunk: 可选参数，表示是否要对文件进行分片传输，默认为true。
 
