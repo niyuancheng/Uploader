@@ -4,7 +4,6 @@ import { AxiosReturnType } from "../type/AxiosType";
 import { ChunkItem, Hash } from "../type/ChunkItem";
 import Axios from "./axios";
 import { ParallelHasher } from "../../node_modules/ts-md5/dist/esm/index";
-import $warn from "./warn";
 class FileUtils extends Axios {
   private file: File;
   tasks: Array<AxiosReturnType> = [];
@@ -212,7 +211,6 @@ class FileUtils extends Axios {
     if (ifSendByChunk && !sessionStorage.getItem(`file${this.fileId}`)) {
       this.slice(piece);
       let [file,...chunks] = await this.generateId();
-      console.log(file,chunks,this,chunks);
       this.fileId = file;
       for(let index in chunks) {
         this.chunks[index].id = chunks[index];

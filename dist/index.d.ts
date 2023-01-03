@@ -8,6 +8,7 @@ declare class Uploader extends CustomEvent {
     private fileInputElement;
     private fileMap;
     private lastUploadTime;
+    private gapTime;
     constructor(configuration: UploaderOptions, options?: BaseOptions);
     init(): void;
     clearChunkStorage(): void;

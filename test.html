@@ -22,17 +22,17 @@
                 autoUpload: true
             })
 
-            // uploader.addEventListener("fileSuccess",(file)=>{
-            //     console.log("所有文件发送成功");
-            // })
+            uploader.addEventListener("fileSuccess",(file)=>{
+                console.log("所有文件发送成功");
+            })
 
-            // uploader.addEventListener("filePercent",(speed,percent,expect)=>{
-            //     console.log('-------------------------------');
-            //     console.log(`传输速度为: ${speed} B/s`);
-            //     console.log(`传输的比例为: ${percent}%`);
-            //     console.log(`预计还需${expect}s`);
-            //     console.log('-------------------------------');
-            // })
+            uploader.addEventListener("filePercent",(speed,percent,expect)=>{
+                console.log('-------------------------------');
+                console.log(`传输速度为: ${speed} B/s`);
+                console.log(`传输的比例为: ${percent}%`);
+                console.log(`预计还需${expect}s`);
+                console.log('-------------------------------');
+            })
         }
     </script>
 </body>

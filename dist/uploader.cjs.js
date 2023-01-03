@@ -714,7 +714,6 @@ class FileUtils extends Axios {
             if (ifSendByChunk && !sessionStorage.getItem(`file${this.fileId}`)) {
                 this.slice(piece);
                 let [file, ...chunks] = yield this.generateId();
-                console.log(file, chunks, this, chunks);
                 this.fileId = file;
                 for (let index in chunks) {
                     this.chunks[index].id = chunks[index];
@@ -754,6 +753,7 @@ class Uploader extends CustomEvent {
         };
         this.fileMap = new Map();
         this.lastUploadTime = 0;
+        this.gapTime = 0;
         //覆写父类的dispatchEvent方法
         this.dispatchEvent = function (type, ...args) {
             if (this._events[type]) {
@@ -846,7 +846,7 @@ class Uploader extends CustomEvent {
         }
         this.fileMap.get(file).cancelTask();
     }
-    //格式化文件的具体大小，单位为B-字节
+    //格式化文件的具体大小，基本单位为...B/s,给用户自定义传输速率的格式
     formatSize(size) {
         if (size < 1024) {
             return `${size.toFixed(2)}B`;
@@ -865,8 +865,8 @@ class Uploader extends CustomEvent {
         this.addEventListener("fileProgress", (file, uploadedSize, totalSize) => {
             let now = +new Date();
             let gap = now - this.lastUploadTime;
-            console.log(now, gap);
-            let uploadSpeed = uploadedSize / gap;
+            this.gapTime = gap === 0 ? this.gapTime : gap;
+            let uploadSpeed = uploadedSize / this.gapTime;
             let percent = (uploadedSize / totalSize * 100).toFixed(1);
             let expectTime = (totalSize - uploadedSize) / uploadSpeed;
             this.lastUploadTime = now;

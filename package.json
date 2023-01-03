@@ -1,6 +1,6 @@
 {
   "name": "niuploader",
-  "version": "1.0.3",
+  "version": "1.1.0-beta",
   "description": "This is TS Library for the uploading of large file",
   "scripts": {
     "build": "rollup -cw"

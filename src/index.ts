@@ -21,6 +21,7 @@ class Uploader extends CustomEvent {
   private fileInputElement: HTMLInputElement | undefined;
   private fileMap: Map<File, FileUtils> = new Map<File, FileUtils>();
   private lastUploadTime: number = 0;
+  private gapTime: number = 0;
   
   constructor(configuration: UploaderOptions, options: BaseOptions = {}) {
     super(options);
@@ -115,27 +116,27 @@ class Uploader extends CustomEvent {
     this.fileMap.get(file).cancelTask();
   }
 
-  //格式化文件的具体大小，单位为B-字节
+  //格式化文件的具体大小，基本单位为...B/s,给用户自定义传输速率的格式
   formatSize(size:number): string {
     if(size < 1024) {
       return `${size.toFixed(2)}B`;
     } else if(size >= 1024 && size < 1024 * 1024) {
-      return `${(size/1024).toFixed(2)}KB`;
+      return `${(size / 1024).toFixed(2)}KB`;
     } else {
-      return `${(size/1024*1024).toFixed(2)}MB`;
+      return `${(size / 1024 * 1024).toFixed(2)}MB`;
     }
   }
 
   showProgress() {
     this.addEventListener("fileSend",(file, total) => {
-      this.lastUploadTime = + new Date();
+      this.lastUploadTime = +new Date();
     })
 
     this.addEventListener("fileProgress", (file, uploadedSize, totalSize)=>{
         let now = +new Date();
         let gap = now - this.lastUploadTime;
-        console.log(now, gap)
-        let uploadSpeed = uploadedSize / gap ;
+        this.gapTime = gap === 0 ? this.gapTime : gap;
+        let uploadSpeed = uploadedSize / this.gapTime ;
         let percent = (uploadedSize / totalSize * 100).toFixed(1);
         let expectTime = (totalSize - uploadedSize) / uploadSpeed;
         this.lastUploadTime = now;
