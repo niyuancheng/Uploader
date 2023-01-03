@@ -5,6 +5,7 @@ import { ChunkItem, Hash } from "../type/ChunkItem";
 import Axios from "./axios";
 declare class FileUtils extends Axios {
     private file;
+    private fileItem;
     tasks: Array<AxiosReturnType>;
     chunks: Array<ChunkItem>;
     fileId: Hash;

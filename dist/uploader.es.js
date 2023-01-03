@@ -65,7 +65,7 @@ class Axios {
         this.loadedSizeArray = [];
         this._events = {};
     }
-    sendRequest(url, method, data, options = {}, chunkItem, context, dispatchEvent) {
+    sendRequest(url, method, data, options = {}, fileItem, chunkItem, context, dispatchEvent) {
         let xhr = new XMLHttpRequest();
         let p = new Promise((res, rej) => {
             //刚发送http请求时触发loadstart事件
@@ -75,9 +75,9 @@ class Axios {
                     this._events["chunkSend"].forEach((cb) => cb.call(this, dispatchEvent));
             };
             xhr.upload.onprogress = (e) => {
+                chunkItem.percent = parseFloat((e.loaded / e.total).toFixed(2));
                 if (e.lengthComputable) {
-                    dispatchEvent.call(context, "chunkProgress", chunkItem, e.loaded, e.total);
-                    chunkItem.percent = parseFloat((e.loaded / e.total).toFixed(2));
+                    dispatchEvent.call(context, "chunkProgress", fileItem, chunkItem);
                     this._events["fileProgress"] &&
                         this._events["fileProgress"].forEach((cb) => cb.call(this, dispatchEvent));
                 }
@@ -605,7 +605,7 @@ class FileUtils extends Axios {
             this.chunks.forEach(item => {
                 uploadedSize += item.percent * item.size;
             });
-            dispatchEvent.call(this.context, "fileProgress", this.file, uploadedSize, this.file.size);
+            dispatchEvent.call(this.context, "fileProgress", this.fileItem, uploadedSize, this.file.size);
         });
         this._events["chunkSend"] = this._events["chunkSend"] || [];
         this._events["chunkSend"].push((dispatchEvent) => {
@@ -674,22 +674,22 @@ class FileUtils extends Axios {
                 form.append("chunkId", chunkItem.id);
                 let { p, xhr } = this.sendRequest(chunkApi, "post", form, {
                     "Content-Type": "multipart/form-data;charset=utf-8",
-                }, chunkItem, this.context, dispatchEvent);
+                }, this.fileItem, chunkItem, this.context, dispatchEvent);
                 p.then((response) => {
                     //走到这说明该分片传输成功
                     this.saveUploadedChunk(this.fileId, chunkItem.id);
                     if (response.type === "success") {
-                        dispatchEvent.call(this.context, "chunkSuccess", this.file, chunkItem, response.data);
-                        dispatchEvent.call(this.context, "chunkComplete", this.file, chunkItem, response.data);
+                        dispatchEvent.call(this.context, "chunkSuccess", this.fileItem, chunkItem, response.data);
+                        dispatchEvent.call(this.context, "chunkComplete", this.fileItem, chunkItem, response.data);
                     }
                 }, (err) => {
                     if (err.type === "abort") {
-                        dispatchEvent.call(this.context, "chunkAbort", this.file, chunkItem, err.data);
-                        dispatchEvent.call(this.context, "chunkComplete", this.file, chunkItem, err.data);
+                        dispatchEvent.call(this.context, "chunkAbort", this.fileItem, chunkItem, err.data);
+                        dispatchEvent.call(this.context, "chunkComplete", this.fileItem, chunkItem, err.data);
                     }
                     else if (err.type === "error") {
-                        dispatchEvent.call(this.context, "chunkError", this.file, chunkItem, err.data);
-                        dispatchEvent.call(this.context, "chunkComplete", this.file, chunkItem, err.data);
+                        dispatchEvent.call(this.context, "chunkError", this.fileItem, chunkItem, err.data);
+                        dispatchEvent.call(this.context, "chunkComplete", this.fileItem, chunkItem, err.data);
                     }
                 });
                 this.tasks.push({ p, xhr, chunkItem });
@@ -700,11 +700,11 @@ class FileUtils extends Axios {
         Promise.allSettled(this.tasks).then((resArry) => {
             for (let res of resArry) {
                 if (res.status === "rejected") {
-                    return dispatchEvent.call(this.context, "fileComplete", this.file);
+                    return dispatchEvent.call(this.context, "fileComplete", this.fileItem);
                 }
             }
-            dispatchEvent.call(this.context, "fileComplete", this.file);
-            dispatchEvent.call(this.context, "fileSuccess", this.file);
+            dispatchEvent.call(this.context, "fileComplete", this.fileItem);
+            dispatchEvent.call(this.context, "fileSuccess", this.fileItem);
         });
     }
     uploadTask(piece, chunkApi, fileApi, dispatchEvent, ifSendByChunk) {
@@ -716,6 +716,11 @@ class FileUtils extends Axios {
                 for (let index in chunks) {
                     this.chunks[index].id = chunks[index];
                 }
+                this.fileItem = {
+                    file: this.file,
+                    id: this.fileId,
+                    size: this.file.size
+                };
             }
             this.addTask(chunkApi, fileApi, dispatchEvent);
             this.triggerTask(dispatchEvent);
@@ -745,7 +750,7 @@ class Uploader extends CustomEvent {
             ifSendByChunk: true,
             chunkSize: 1024 * 1024 * 0.1,
             autoUpload: true,
-            workerPath: "../hash_worker.js",
+            workerPath: "/node_modules/niuploader/hash_worker.js",
             chunkApi: "",
             fileApi: ""
         };

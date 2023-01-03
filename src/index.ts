@@ -14,7 +14,7 @@ class Uploader extends CustomEvent {
     ifSendByChunk: true,
     chunkSize: 1024 * 1024 * 0.1,
     autoUpload: true,
-    workerPath:"../hash_worker.js",
+    workerPath: "/node_modules/niuploader/hash_worker.js",
     chunkApi:"",
     fileApi:""
   };
