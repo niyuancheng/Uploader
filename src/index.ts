@@ -14,7 +14,7 @@ class Uploader extends CustomEvent {
     ifSendByChunk: true,
     chunkSize: 1024 * 1024 * 0.1,
     autoUpload: true,
-    workerPath: "/node_modules/niuploader/hash_worker.js",
+    workerPath: "/hash_worker.js",
     chunkApi:"",
     fileApi:""
   };
@@ -94,6 +94,7 @@ class Uploader extends CustomEvent {
       });
     });
   }
+
   uploadFile(file: File, ifSendByChunk: boolean = true): void | never {
     if (!this.fileMap.get(file)) {
       return $warn("你输入的文件不存在");
@@ -145,7 +146,7 @@ class Uploader extends CustomEvent {
   }
 
   //覆写父类的dispatchEvent方法
-  dispatchEvent: EventFunction = function (type, ...args: any[]) {
+  override dispatchEvent: EventFunction = function (type, ...args: any[]) {
     if (this._events[type]) {
       this._events[type].forEach((cb: Function) => cb.call(this, ...args));
     }

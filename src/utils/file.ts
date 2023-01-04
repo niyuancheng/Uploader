@@ -86,7 +86,7 @@ class FileUtils extends Axios {
       })
     })
   }
-
+  // 生成文件和分片的ID号
   generateId() {
     return Promise.all([this.getHashId(this.file), ...this.chunks.map(item=>{
       return this.getHashId(item.chunk)
