@@ -64,7 +64,6 @@ function __awaiter(thisArg, _arguments, P, generator) {
 
 class Axios {
     constructor() {
-        this.loadedSizeArray = [];
         this._events = {};
     }
     sendRequest(url, method, data, options = {}, fileItem, chunkItem, context, dispatchEvent) {
@@ -646,6 +645,7 @@ class FileUtils extends Axios {
             });
         });
     }
+    // 生成文件和分片的ID号
     generateId() {
         return Promise.all([this.getHashId(this.file), ...this.chunks.map(item => {
                 return this.getHashId(item.chunk);
@@ -752,7 +752,7 @@ class Uploader extends CustomEvent {
             ifSendByChunk: true,
             chunkSize: 1024 * 1024 * 0.1,
             autoUpload: true,
-            workerPath: "/node_modules/niuploader/hash_worker.js",
+            workerPath: "/hash_worker.js",
             chunkApi: "",
             fileApi: ""
         };

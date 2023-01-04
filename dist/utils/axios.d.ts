@@ -4,7 +4,6 @@ import { AxiosRequestData, AxiosMethod, AxiosHeaderOptions, AxiosReturnType } fr
 import { ChunkItem } from "../type/ChunkItem";
 import { FileItem } from "../type/FileItem";
 declare class Axios {
-    loadedSizeArray: number[];
     _events: EventObject;
     constructor();
     sendRequest(url: string, method: AxiosMethod, data: AxiosRequestData, options: AxiosHeaderOptions, fileItem: FileItem, chunkItem: ChunkItem, context: Uploader, dispatchEvent?: EventFunction): AxiosReturnType;
